@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">ProgrammingArea</string>
+    <string name="full_name">Full Name</string>
+    <string name="region">Region</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
 </resources>
