@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -15,6 +17,9 @@ public class MainActivity extends AppCompatActivity {
 
         View loginButton = findViewById(R.id.loginButton);
         View registerButton = findViewById(R.id.registerButton);
+
+
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         loginButton.setOnClickListener(v -> {
             Intent activityChangeIntent = new Intent(MainActivity.this, LoginActivity.class);

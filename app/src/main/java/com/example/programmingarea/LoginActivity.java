@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import java.util.Objects;
+
 public class LoginActivity extends AppCompatActivity {
 
     @Override
@@ -16,6 +18,8 @@ public class LoginActivity extends AppCompatActivity {
         View emailInput = findViewById(R.id.emailRegisterInput);
         View passwordInput = findViewById(R.id.passwordRegisterInput);
         View loginSubmitActivity = findViewById(R.id.loginSubmitButton);
+
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
 
         loginSubmitActivity.setOnClickListener(v -> {

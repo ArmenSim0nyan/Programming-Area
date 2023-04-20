@@ -7,4 +7,12 @@
     <string name="register">Register</string>
     <string name="login">Login</string>
     <string name="title">Programming\nArea</string>
+
+    <string-array name="programming_languages">
+        <item>Programming Language</item>
+        <item>Java Script</item>
+        <item>Python</item>
+        <item>Java</item>
+        <item>Kotlin</item>
+    </string-array>
 </resources>
