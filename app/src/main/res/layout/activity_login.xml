@@ -28,7 +28,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.772"
+        app:layout_constraintVertical_bias="0.686"
         tools:ignore="MissingConstraints" />
 
     <EditText
@@ -37,7 +37,7 @@
         android:layout_height="50dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="112dp"
+        android:layout_marginBottom="124dp"
         android:background="@drawable/rounded_corrner_edittext"
         android:backgroundTint="@color/deep_green"
         android:hint="@string/password"
@@ -58,7 +58,7 @@
         android:layout_height="60dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="96dp"
+        android:layout_marginBottom="132dp"
         android:backgroundTint="@color/deep_green"
         android:text="@string/login"
         android:textColor="@color/blue"
@@ -81,8 +81,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/emailRegisterInput"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.491" />
+        app:layout_constraintVertical_bias="0.42" />
 </androidx.constraintlayout.widget.ConstraintLayout>
