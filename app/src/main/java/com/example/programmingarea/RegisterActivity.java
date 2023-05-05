@@ -1,21 +1,22 @@
 package com.example.programmingarea;
 
-import androidx.annotation.NonNull;
+import static android.content.ContentValues.TAG;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+import com.example.programmingarea.dataclass.User;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Objects;
 
@@ -23,6 +24,8 @@ import java.util.Objects;
 public class RegisterActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +35,6 @@ public class RegisterActivity extends AppCompatActivity {
         String[] items = getResources().getStringArray(R.array.programming_languages);
 
         mAuth = FirebaseAuth.getInstance();
-
 
         EditText nameRegisterInput = findViewById(R.id.nameRegisterInput);
         Spinner programmingLanguageDropDown = findViewById(R.id.spinner);
@@ -57,6 +59,9 @@ public class RegisterActivity extends AppCompatActivity {
                 android.R.layout.simple_dropdown_item_1line
         );
 
+        SharedPreferences sharedPreferences = getSharedPreferences("my_prefs", MODE_PRIVATE);
+        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
         Objects.requireNonNull(getSupportActionBar()).hide();
 
         programmingLanguageDropDown.setAdapter(spinnerArrayAdapter);
@@ -65,14 +70,25 @@ public class RegisterActivity extends AppCompatActivity {
             String email = emailRegisterInput.getText().toString();
             String name = nameRegisterInput.getText().toString();
             String password = passwordRegisterInput.getText().toString();
-            String programmingLanguage = programmingLanguageDropDown.getAutofillValue().toString();
+            String programmingLanguage = programmingLanguageDropDown.getSelectedItem().toString();
 
             if(email.isEmpty() || name.isEmpty() || password.isEmpty()) {
-                Toast.makeText(RegisterActivity.this, "All fileds are required", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
             } else {
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
+                                User user = new User(name, programmingLanguage, 0, 0, 0);
+                                db.collection("data")
+                                        .add(user)
+                                        .addOnSuccessListener(e -> {
+                                            myEdit.putString("documentId", e.getId());
+                                            myEdit.apply();
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Log.w(TAG, "Error adding user", e);
+                                            // Handle error here, if needed
+                                        });
                                 Intent activityChangeIntent = new Intent(RegisterActivity.this, LoginActivity.class);
                                 startActivity(activityChangeIntent);
                                 finish();
@@ -82,9 +98,6 @@ public class RegisterActivity extends AppCompatActivity {
                             }
                         });
             }
-
-//            Intent activityChangeIntent = new Intent(RegisterActivity.this, LoginActivity.class);
-//            startActivity(activityChangeIntent);
         });
     }
 }
