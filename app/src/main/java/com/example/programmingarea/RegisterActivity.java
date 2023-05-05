@@ -70,7 +70,7 @@ public class RegisterActivity extends AppCompatActivity {
             String email = emailRegisterInput.getText().toString();
             String name = nameRegisterInput.getText().toString();
             String password = passwordRegisterInput.getText().toString();
-            String programmingLanguage = programmingLanguageDropDown.getAutofillValue().toString();
+            String programmingLanguage = programmingLanguageDropDown.getSelectedItem().toString();
 
             if(email.isEmpty() || name.isEmpty() || password.isEmpty()) {
                 Toast.makeText(RegisterActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
@@ -78,8 +78,8 @@ public class RegisterActivity extends AppCompatActivity {
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                User user = new User(name, programmingLanguage);
-                                db.collection("user_data")
+                                User user = new User(name, programmingLanguage, 0, 0, 0);
+                                db.collection("data")
                                         .add(user)
                                         .addOnSuccessListener(e -> {
                                             myEdit.putString("documentId", e.getId());
