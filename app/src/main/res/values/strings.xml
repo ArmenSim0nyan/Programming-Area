@@ -15,4 +15,10 @@
         <item>Java</item>
         <item>Kotlin</item>
     </string-array>
+
+    <string-array name="game_type">
+        <item>Game Mode</item>
+        <item>Quiz Mode</item>
+        <item>Code Fight Mode</item>
+    </string-array>
 </resources>
