@@ -1,6 +1,7 @@
 package com.example.programmingarea;
 
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
@@ -47,10 +48,11 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
-//        db.collection("user_data").whereEqualTo("");
 
         checkButton.setOnClickListener(v -> {
-            System.out.println(sharedPreferences.getString("documentId", "invalid"));
+            Intent activityChangeIntent = new Intent(DashboardActivity.this, CreateGameActivity.class);
+            startActivity(activityChangeIntent);
+            finish();
         });
     }
 }
