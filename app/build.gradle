@@ -32,6 +32,10 @@ android {
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.26'
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
+    implementation platform('com.google.firebase:firebase-bom:32.1.0')
+
+
+    implementation 'com.google.firebase:firebase-database'
 
     testCompileOnly 'org.projectlombok:lombok:1.18.26'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'

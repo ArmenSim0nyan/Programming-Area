@@ -29,7 +29,7 @@ public class CreateGameActivity extends AppCompatActivity {
             String programmingLanguage = programmingLanguageDropDown.getSelectedItem().toString();
 
             if(selectedGameType.equals("Quiz Mode") && !programmingLanguage.equals("Programming Language")) {
-                Intent activityChangeIntent = new Intent(CreateGameActivity.this, QuizModeActivity.class);
+                Intent activityChangeIntent = new Intent(CreateGameActivity.this, LoadingPage.class);
                 startActivity(activityChangeIntent);
                 finish();
             } else if(selectedGameType.equals("Code Fight Mode") && !programmingLanguage.equals("Programming Language")) {
