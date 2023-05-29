@@ -1,6 +1,5 @@
 package com.example.programmingarea;
 
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,9 +9,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.programmingarea.dataclass.User;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class DashboardActivity extends AppCompatActivity {
@@ -25,6 +22,8 @@ public class DashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
 
         SharedPreferences sharedPreferences = getSharedPreferences("my_prefs", MODE_PRIVATE);
+        SharedPreferences.Editor myEdit = sharedPreferences.edit();
+
 
         Button checkButton = findViewById(R.id.button);
         TextView fullName = findViewById(R.id.textView);
@@ -35,17 +34,17 @@ public class DashboardActivity extends AppCompatActivity {
 
         DocumentReference user = db.collection("data").document(sharedPreferences.getString("documentId", "invalid"));
 
-        user.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                User userData = documentSnapshot.toObject(User.class);
+        user.get().addOnSuccessListener(documentSnapshot -> {
+            User userData = documentSnapshot.toObject(User.class);
 
-                fullName.setText(userData.getName());
-                programmingLanguage.setText(String.format("Programming language: %s", userData.getLanguage()));
-                points.setText(String.valueOf(userData.getPoints()));
-                win.setText(String.valueOf(userData.getWin()));
-                lose.setText(String.valueOf(userData.getLose()));
-            }
+            myEdit.putString("fullName", userData.getName());
+            myEdit.apply();
+
+            fullName.setText(userData.getName());
+            programmingLanguage.setText(String.format("Programming language: %s", userData.getLanguage()));
+            points.setText(String.valueOf(userData.getPoints()));
+            win.setText(String.valueOf(userData.getWin()));
+            lose.setText(String.valueOf(userData.getLose()));
         });
 
 
