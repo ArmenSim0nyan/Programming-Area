@@ -17,8 +17,10 @@ import android.widget.Toast;
 import com.example.programmingarea.dataclass.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class RegisterActivity extends AppCompatActivity {
@@ -66,37 +68,56 @@ public class RegisterActivity extends AppCompatActivity {
 
         programmingLanguageDropDown.setAdapter(spinnerArrayAdapter);
 
+
         registerSubmitButton.setOnClickListener(v -> {
             String email = emailRegisterInput.getText().toString();
             String name = nameRegisterInput.getText().toString();
             String password = passwordRegisterInput.getText().toString();
             String programmingLanguage = programmingLanguageDropDown.getSelectedItem().toString();
 
-            if(email.isEmpty() || name.isEmpty() || password.isEmpty()) {
+            if (email.isEmpty() || name.isEmpty() || password.isEmpty()) {
                 Toast.makeText(RegisterActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
             } else {
-                mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                User user = new User(name, programmingLanguage, 0, 0, 0);
-                                db.collection("data")
-                                        .add(user)
-                                        .addOnSuccessListener(e -> {
-                                            myEdit.putString("documentId", e.getId());
-                                            myEdit.apply();
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            Log.w(TAG, "Error adding user", e);
-                                            // Handle error here, if needed
-                                        });
-                                Intent activityChangeIntent = new Intent(RegisterActivity.this, LoginActivity.class);
-                                startActivity(activityChangeIntent);
-                                finish();
-                            } else {
-                                Toast.makeText(RegisterActivity.this, "Authentication failed.",
-                                        Toast.LENGTH_SHORT).show();
+                db.collection("data").get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        boolean isValidCredentials = true;
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            User userData = document.toObject(User.class);
+                            if (userData.getName().equals(name)) {
+                                isValidCredentials = false;
+                                break;
                             }
-                        });
+                        }
+                        if (isValidCredentials) {
+                            mAuth.createUserWithEmailAndPassword(email, password)
+                                    .addOnCompleteListener(task2 -> {
+                                        if (task2.isSuccessful()) {
+                                            User user = new User(name, programmingLanguage, 0, 0, 0);
+                                            db.collection("data")
+                                                    .add(user)
+                                                    .addOnSuccessListener(e -> {
+                                                        myEdit.putString("documentId", e.getId());
+                                                        myEdit.apply();
+                                                    })
+                                                    .addOnFailureListener(e -> {
+                                                        Log.w(TAG, "Error adding user", e);
+                                                        // Handle error here, if needed
+                                                    });
+                                            Intent activityChangeIntent = new Intent(RegisterActivity.this, LoginActivity.class);
+                                            startActivity(activityChangeIntent);
+                                            finish();
+                                        } else {
+                                            Toast.makeText(RegisterActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        } else {
+                            Toast.makeText(RegisterActivity.this, "Username already exists", Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        Log.d(TAG, "Error getting documents: ", task.getException());
+                        // Handle error here, if needed
+                    }
+                });
             }
         });
     }
