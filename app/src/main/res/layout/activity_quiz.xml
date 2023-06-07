@@ -49,7 +49,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="144dp"
+        android:ellipsize="end"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:text="Which is the fastest sorting algorithm"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -81,21 +85,33 @@
         app:layout_constraintVertical_bias="0.13">
 
         <ImageView
+            android:id="@+id/first"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_margin="7dp"
             android:src="@drawable/circle" />
 
         <ImageView
+            android:id="@+id/second"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_margin="7dp"
+            android:src="@drawable/circle" />
+
+
+        <ImageView
+            android:id="@+id/third"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_margin="7dp"
             android:src="@drawable/circle" />
 
         <ImageView
+            android:id="@+id/fourth"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_margin="7dp"
             android:src="@drawable/circle" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
