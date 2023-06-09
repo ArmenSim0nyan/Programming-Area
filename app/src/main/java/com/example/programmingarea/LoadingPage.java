@@ -1,5 +1,7 @@
 package com.example.programmingarea;
 
+import java.util.Random;
+
 import static android.content.ContentValues.TAG;
 
 import android.content.Intent;
@@ -11,16 +13,25 @@ import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.helper.widget.MotionEffect;
 
+import com.example.programmingarea.dataclass.Questions;
 import com.example.programmingarea.dataclass.QuizGame;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -31,6 +42,9 @@ import java.lang.reflect.Field;
 public class LoadingPage extends AppCompatActivity {
     FirebaseDatabase db = FirebaseDatabase.getInstance();
     DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+    FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstance) {
@@ -43,8 +57,13 @@ public class LoadingPage extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("my_prefs", MODE_PRIVATE);
         SharedPreferences.Editor myEdit = sharedPreferences.edit();
 
-        QuizGame newGame = new QuizGame(sharedPreferences.getString("fullName", "invalid"), "", "python", "", "", "");
+        Random random = new Random();
+        int randomNumber = random.nextInt(26);
 
+        QuizGame newGame = new QuizGame(sharedPreferences.getString("fullName", "invalid"), "", "python", "", "", "", "", randomNumber, randomNumber + 1, randomNumber + 2, randomNumber + 3);
+
+
+        List<Questions> list = new ArrayList<>();
 
         reference.addValueEventListener(new ValueEventListener() {
 
@@ -69,20 +88,26 @@ public class LoadingPage extends AppCompatActivity {
                         String recievedName = game.get("firstPlayer").toString();
 
                         if(!Objects.requireNonNull(game.get("secondPlayer")).toString().equals("") && gettedName.equals(recievedName)) {
+                            firestore.collection("questions").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            Questions question = document.toObject(Questions.class);
+                                            System.out.println(question.getRightId());
+                                            list.add(question);
+                                        }
+                                        Log.d(MotionEffect.TAG, list.toString());
+                                    } else {
+                                        Log.d(MotionEffect.TAG, "Error getting documents: ", task.getException());
+                                    }
+                                }
+                            });
                             Intent activityChangeIntent = new Intent(LoadingPage.this, QuizModeActivity.class);
                             startActivity(activityChangeIntent);
                             finish();
                         }
 
-//                        System.out.println(Objects.requireNonNull(game.get("secondPlayer")).toString().equals("") && sharedPreferences.getString("fullName", "invalid") != game.get("firstPlayer"));
-//                        System.out.println(!Objects.requireNonNull(game.get("secondPlayer")).toString().equals("") && sharedPreferences.getString("fullName", "invalid") == game.get("firstPlayer"));
-//                        System.out.println(!Objects.requireNonNull(game.get("secondPlayer")).toString().equals(""));
-//                        System.out.println(sharedPreferences.getString("fullName", "invalid"));
-//                        System.out.println(game.get("firstPlayer"));
-//                        System.out.println(sharedPreferences.getString("fullName", "invalid") == game.get("firstPlayer").toString());
-
-
-//                        System.out.println(gettedName.equals(recievedName));
 
                         if(Objects.requireNonNull(game.get("secondPlayer")).toString().equals("") && !gettedName.equals(recievedName)) {
                             updatedData.put("secondPlayer", sharedPreferences.getString("fullName", "invalid"));
